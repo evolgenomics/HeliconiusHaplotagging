@@ -1,0 +1,50 @@
+#!/bin/bash
+
+#This run was set up as: 150+13+12+150 (=> short B, 5bp instead of 6bp)
+
+#Copying files
+/ebio/abt6_ga2/images/191007_ST-J00101_0158_AHCKWCBBXY/
+cp /ebio/abt6_ga2/images/190917_ST-J00101_0155_AHCVNNBBXY/RunInfo.xml ./00_Run155_L1_bcl2fastq/Reports
+cp /ebio/abt6_ga2/images/190917_ST-J00101_0155_AHCVNNBBXY/RunInfo.xml ./00_Run155_L3_bcl2fastq/Reports
+
+#Basecalling - with specific parameters to generate fastq for INDEX reads as well
+bcl2fastq --use-bases-mask=Y150,I13,I12,Y150 --create-fastq-for-index-reads -r 20 -w 20 -d 20 -p 40 -R /ebio/abt6_ga2/images/191007_ST-J00101_0158_AHCKWCBBXY/ \
+--tiles s_[8] --output-dir=00_Run158_L8_bcl2fastq --interop-dir=00_Run158_L8_bcl2fastq/Interop --reports-dir=00_Run158_L8_bcl2fastq/Reports --stats-dir=00_Run158_L8_bcl2fastq/Stats 2> error_00_L8_bcl2fastq.out
+
+#Demultiplexing beadTags, using the binary tag_fastq_13plus12.o 
+./tag_fastq_13plus12.o 00_Run158_L8_bcl2fastq/Undetermined_S0_L008_ 00_Run158_L8_bcl2fastq/corrected/run158_L8_corrected 2>err_tag_fastq_run158_L8.out | tee output_fastq_run158_L8.out
+
+
+#trimming using cutadapt -------------------------------------------------------------------------------------------------------------------------
+
+nice -10 cutadapt -a CTGTCTCTTATACACATCT -g AGATGTGTATAAGAGACAG -A CTGTCTCTTATACACATCT -G AGATGTGTATAAGAGACAG \
+        --cores=10 -O 5 \
+        -o /tmp/mkucka/$fbname\_R1_001.fastq.cutadapt.1.gz -p /tmp/mkucka/$fbname\_R2_001.fastq.cutadapt.1.gz --pair-filter both \
+        $dir/$fbname\_R1_001.fastq.gz $dir/$fbname\_R2_001.fastq.gz
+
+cutadapt -m 30 \
+        -o /tmp/mkucka/$fbname\_R1_001.fastq.cutadapt.gz -p /tmp/mkucka/$fbname\_R2_001.fastq.cutadapt.gz \
+        /tmp/mkucka/$fbname\_R1_001.fastq.cutadapt.1.gz /tmp/mkucka/$fbname\_R2_001.fastq.cutadapt.1.gz \
+        --too-short-output=/tmp/mkucka/$fbname\_R1.tooshort.fastq.gz --too-short-paired-output=/tmp/mkucka/$fbname\_R2.tooshort.fastq.gz
+
+
+
+#Read placement --------------------------------------------------------------------------------------------------------------------------
+/fml/chones/local/bin/bwa mem -C -t 50 /fml/mickle/data/Marek/Heliconius_Haplo_run147_L5/Heliconius_erato_demophoon_v1.fa \
+        $file ${file/R1_001/R2_001} \
+        -R "@RG\tID:$fbname\tSM:$fbname\tLB:$fbname\tPL:Illumina.HiSeq3000.2x150" |
+        /fml/chones/local/bin/samtools view -bh - > /tmp/mkucka/$fbname.erato.bam
+
+/fml/chones/local/bin/samtools sort \
+        -@ 50 -l 9 \
+        -T /tmp/mkucka/$fbname.tmpsort \
+        -o /tmp/mkucka/$fbname.erato.sorted.bam \
+        /tmp/mkucka/$fbname.erato.bam
+
+#MarkDuplicates -------------------------------------------------------------------------------------------------------------------------
+
+java -Xmx12g -XX:ParallelGCThreads=64 -jar /fml/chones/local/picard-2.18.25/picard.jar MarkDuplicates \
+        I=$file \
+        O=/tmp/mkucka/$fbname.pMarkdup.bam \
+        M=$dir/$fbname.pMarkdup.metrics \
+CREATE_INDEX=TRUE READ_ONE_BARCODE_TAG=BX READ_TWO_BARCODE_TAG=BX VALIDATION_STRINGENCY=LENIENT \
