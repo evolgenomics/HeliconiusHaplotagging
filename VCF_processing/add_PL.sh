@@ -1,4 +1,8 @@
 #!/bin/bash
+#This script adds the PL field to STITCH-generated output using AWK.
+#Usage: 
+#./add_PL.sh <STITCH.vcf.gz>
+
 i=$1
 tabix $i;
 bcftools view $i -h > ${i/.vcf.gz/.header}; 
