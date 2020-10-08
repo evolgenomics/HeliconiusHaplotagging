@@ -20,6 +20,7 @@ Our general strategy for demultiplexing goes as follows:
         --too-short-output=<read_1_out.tooshort.fastq.gz> --too-short-paired-output=<read_2_out.tooshort.fastq.gz>`
 
 - read placement, using the -C switch to include the extra comment tags
+
 `bwa mem -C -t 50 <helera1_demo_dir>/Heliconius_erato_demophoon_v1.fa \
         $file ${file/R1_001/R2_001} \
         -R "@RG\tID:$fbname\tSM:$fbname\tLB:$fbname\tPL:Illumina.HiSeq3000.2x150" |
