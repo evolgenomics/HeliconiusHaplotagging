@@ -10,12 +10,12 @@ Our general strategy for demultiplexing goes as follows:
 - adapter trimming 
 
 `cutadapt -a CTGTCTCTTATACACATCT -g AGATGTGTATAAGAGACAG -A CTGTCTCTTATACACATCT -G AGATGTGTATAAGAGACAG \
-        --cores=<cores> -O 5 \`
+        --cores=<cores> -O 5 \
         -o <read_1_out.fastq.cutadapt.gz> -p <read_1_out.fastq.cutadapt.gz> --pair-filter both \
         $dir/$fbname\_R1_001.fastq.gz $dir/$fbname\_R2_001.fastq.gz`
 
 `cutadapt -m 30 \
-        -o <read_1_out.fastq.cutadapt.gz> -p <read_2_out.fastq.cutadapt.gz> \
+       -o <read_1_out.fastq.cutadapt.gz> -p <read_2_out.fastq.cutadapt.gz> \
         <read_1_out.fastq.cutadapt.1.gz> <read_2_out.fastq.cutadapt.1.gz> \
         --too-short-output=<read_1_out.tooshort.fastq.gz> --too-short-paired-output=<read_2_out.tooshort.fastq.gz>`
 
