@@ -7,6 +7,7 @@ use strict;
 #
 #Writes out to ${bam/.bam/.linked_reads.full.bed}
 #NOTE: This version specifically works with haplotagging BX tags of the format AXXBXXCXXDXX, and in a BAM file that has BX, QX and RX tags
+#Output format is in BED12 format. See: https://genome.ucsc.edu/FAQ/FAQformat.html#format1
 
 my $max_distance = 50000;
 chomp($ARGV[0]);
