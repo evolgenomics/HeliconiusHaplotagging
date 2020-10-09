@@ -1,4 +1,4 @@
-#Note
+# Note
 
 This is the code for testing against Longshanks mice
 
@@ -11,10 +11,10 @@ for gtds in *.GTDS; do\
     echo $gtds"        "`perl compare_concordance.pl $gtds;` \
 done
 ```
-#Example output
+# Example output
 
 - Then the output is redirected to a summary file - shown here as an example, with the filename in the first column indicating the run and subsampling conditions, and then in the 4th column, the GT concordance.
-#Note on subsampling schemes
+# Note on subsampling schemes
 
 - "Original" here refers to using short-read only, without considering linked reads BX-tag information
 - "merged" refers to simple subsampling, in which BAM files were subsampled without regard to the BX tag, then merged according to BX tag. This corresponds to the scenario where samples are pooled, but then sequenced at far reduced throughput. This is *not* how multiple haplotagged should be pooled because it will result in far too many molecules/beadTags but with too few reads for each, resulting in many "molecules" with only a single paired-end read.
