@@ -6,7 +6,7 @@ This is the code for testing against Longshanks mice
 - In brief, the genotype/dosage GTDS tables from each of 10 subsampled replicates were evaluated against the full sequence, by means of a simple bash loop, like so:
 
 ```bash
-for gtds in *.impute_merged*.GTDS; do\
+for gtds in *.GTDS; do\
     echo $gtds"        "`perl compare_concordance.pl $gtds;` \
 done
 ```
