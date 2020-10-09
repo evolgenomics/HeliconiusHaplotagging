@@ -4,10 +4,8 @@ This is the code for testing against Longshanks mice
 
 - In brief, the genotype/dosage GTDS tables from each of 10 subsampled replicates were evaluated against the full sequence, by means of a simple bash loop, like so:
 
-`for gtds in *.impute_merged*.GTDS; do
-
-    echo $gtds"        "perl compare_concordance.pl $gtds; 
-
+`for gtds in *.impute_merged*.GTDS; do\
+    echo $gtds"        "perl compare_concordance.pl $gtds; \
 done`
 
 - Then the output is redirected to a summary file - shown here as an example, with the filename in the first column indicating the run and subsampling conditions, and then in the 4th column, the GT concordance.
