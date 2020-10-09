@@ -6,7 +6,7 @@ This is the code for testing against Longshanks mice
 
 `for gtds in *.impute_merged*.GTDS; do
 
-    echo $gtds"        "```perl compare_concordance.pl $gtds```; 
+    echo $gtds"        "perl compare_concordance.pl $gtds; 
 
 done`
 
