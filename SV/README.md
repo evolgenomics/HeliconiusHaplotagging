@@ -33,6 +33,20 @@ awk '!/INTERVAL/' helera1_demo.10k_win.Herato*.molSize.out | datamash mean `seq 
 #Then reform the header
 for i in `seq 21`; do pi=`printf %02d $i`; awk 'BEGIN {split("9675.1512597888 8824.4990473382 6696.8443347322 13585.936545682 10002.271430342 13110.006695393 10633.376510753 9726.3031480578 11057.949014198 12722.594348395 10801.981998112 17603.327013595 11951.680434555 10716.22759819 11899.013809093 9577.0992904137 6968.1988056376 7463.3213813809 9149.130727352 8751.0966154174 8245.6221745849",mean,/ +/);OFS="\t";}; !/INTERVAL/ {for(i=7;i<=NF;i+=3){$i=$i"\t"$i/(mean[(i-4)/3])};print $0}' helera1_demo.10k_win.Herato$pi.molSize.out; done | sort -k 2,2 -k 3,3V | uniq > helera1_demo.10k_win.all.molSize.normalized.out
 cat molSize.header.normalized | xargs -i sed -i '1s;^;'{}'\n;' helera1_demo.10k_win.all.molSize.normalized.out
+
+#Clean-up 
+rm helera1_demo.10k_win.interval_????.molSize.out
+
+#Making a list of importnt internal indels in the genome - here, by picking out the first and last 50 kbp of a scaffold, and putting these into a set of censored grep patterns
+ grep ":1-" -A 4 ../helera1_demo.10k_win.Herato*.intervals | cut -c 46- | awk '/Herato/' > borders.grep
+ grep -v "0000$" -B 4 ../helera1_demo.10k_win.Herato*.1.intervals | cut -c 46- | awk '/Herato/' >> borders.grep 
+
+#The pluck out the columns that corresponds to all samples (c65), or just notabilis (c66 from Site 1) or lativitta (c82). Then normalize these against the genome-wide averages of these columns, and also producing a "delta" column. These positions are filtered against the borders.grep list.
+#The final intervals that pass the 5%/95% quantile thresholds: 0.700 and 2.027 are then dumped out to the Indel_internal_global.list
+cut -f 1,65,66,82,83-86 helera1_demo.10k_win.Herato*.indel | sort -k 2,2nr | awk '{print $1"\t"$2/22.950946072831"\t"$3/1.3127928815398"\t"$4/0.52134928880377"\t"$3/1.3127928815398-$4/0.52134928880377}' | sort -k 2,2n | grep -v -f borders.grep | awk '$2 <= 0.700683; $2 >= 2.0271' > Indel_internal_global.list
+
+#This is then sorted by scaffold and positions, and clustered to create a set of cohoerent loci positions [415 for H. erato] that contain putative indels.
+sed 's/:/\t/;s/-/\t/g' Indel_internal_global.list | sort -k 1,1 -k 2,2n | cut -f 1-4  | bedtools cluster -i - -d 50000 | datamash groupby 5 first 1 min 2 max 3 collapse 4 | cut -f 2- > Indel_internal_global.clustered.list 
 ```
 
 # Interval writing
