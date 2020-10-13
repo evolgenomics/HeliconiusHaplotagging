@@ -8,9 +8,16 @@ This is the code for detecting structural variants
 - populate a pairwise matrix of intervals using the utility code: `interval_write.pl`
 - generate a BED file for the samples with linked reads using `bed_write.full.pl`
 - index the bgzipped BED file using `tabix`
+
+Continguity SV (Inversions/Transpositions/Translocations):
 - on a compute cluster, calculate a Jaccard index for beadTag sharing across windows using the code `struct_jaccard.pl`, looping through the intervals list using an SGE array job, with each job index used to call a joblist file
 - basic post-processing of the Jaccord matrix by calculating genome-wide background threshold levels
 - analyze the Jaccard matrix to detect any anomolies and calling regions of interest (ROIs), here using `pick_ROI.pl`
+
+Size SV (Insertions/deletions):
+For indels we only need to handle a single interval. Strictly speaking indels should appear as anomalies in both size *and* beadTag sharing. This section complements the information by analyzing the molecule size
+- here we use a different cluster script `struct_indel.sge.sh`. The main difference is that ...
+
 
 # Interval writing
 
