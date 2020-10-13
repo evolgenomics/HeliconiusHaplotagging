@@ -16,8 +16,24 @@ Continguity SV (Inversions/Transpositions/Translocations):
 
 Size SV (Insertions/deletions):
 For indels we only need to handle a single interval. Strictly speaking indels should appear as anomalies in both size *and* beadTag sharing. This section complements the information by analyzing the molecule size
-- here we use a different cluster script `struct_indel.sge.sh`. The main difference is that ...
+- here we use a different cluster script `struct_indel.sge.sh`. The main difference is that it calls `structural_indel.pl` instead.
+- These results are then aggregated by a simple bash loop:
+```bash
+for i in `seq 727`; do pi=`printf %04d $i`; cat helera1_demo.10k_win.interval_$pi.molSize.out; done |  awk '{print $0 > "helera1_demo.10k_win."substr($2,1,8)".molSize.out"}'
+#Add header
+for i in `seq 21`; do pi=`printf %02d $i`; head -1 molSize.header  | xargs -i sed -i '1s;^;'{}'\n;' helera1_demo.10k_win.Herato$pi.molSize.out ; done
+```
+- Then the values are normalized per population group, and used to create a reformatted normalized table:
+```bash
+#Genome-wide average molecule size per population:
+awk '!/INTERVAL/' helera1_demo.10k_win.Herato*.molSize.out | datamash mean `seq 7 3 67 | paste -d"," -s` q1 `seq 7 3 67 | paste -d"," -s` q3 `seq 7 3 67 | paste -d"," -s` --narm;
+ 
+##9675.1512597888 8824.4990473382 6696.8443347322 13585.936545682 10002.271430342 13110.006695393 10633.376510753 9726.3031480578 11057.949014198 12722.594348395 10801.981998112 17603.327013595 11951.680434555 10716.22759819 11899.013809093 9577.0992904137 6968.1988056376 7463.3213813809 9149.130727352 8751.0966154174 8245.6221745849
 
+#Then reform the header
+for i in `seq 21`; do pi=`printf %02d $i`; awk 'BEGIN {split("9675.1512597888 8824.4990473382 6696.8443347322 13585.936545682 10002.271430342 13110.006695393 10633.376510753 9726.3031480578 11057.949014198 12722.594348395 10801.981998112 17603.327013595 11951.680434555 10716.22759819 11899.013809093 9577.0992904137 6968.1988056376 7463.3213813809 9149.130727352 8751.0966154174 8245.6221745849",mean,/ +/);OFS="\t";}; !/INTERVAL/ {for(i=7;i<=NF;i+=3){$i=$i"\t"$i/(mean[(i-4)/3])};print $0}' helera1_demo.10k_win.Herato$pi.molSize.out; done | sort -k 2,2 -k 3,3V | uniq > helera1_demo.10k_win.all.molSize.normalized.out
+cat molSize.header.normalized | xargs -i sed -i '1s;^;'{}'\n;' helera1_demo.10k_win.all.molSize.normalized.out
+```
 
 # Interval writing
 
