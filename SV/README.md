@@ -27,3 +27,25 @@ for i in hmel2_5.scaffold.10kb_win.Hmel*.intervals; do perl interval_write.pl $i
 
 #Then we split the bulk joblist files into chunks, by line.
 ```
+
+# Calling ROIs
+The ROIs are determined by the extent of beadTag sharing across two windows, along with some information from a genome-wide normalized background sharing rate. 
+
+The background rate is calculated this way, using helera1_demo as an example:
+```bash
+#First adding a column to the jaccard_matrix output file by expression the fraction of shared BX tags over all BX tag combinations - c12 = c11/(c10*c9)
+zcat hmel2.5.10k_win.Hmel2*.sites.jaccard_matrix.gz | cut -f 1-11 | awk 'BEGIN {OFS="\t"}; {$12 = $11/($10*$9); print $0}' | datamash median 12
+##2.57147e-08
+
+#This value is stored into the $background_rate variable
+background_rate=`zcat hmel2.5.10k_win.Hmel2*.sites.jaccard_matrix.gz  | cut -f 1-11 | awk 'BEGIN {OFS="\t"}; {$12 = $11/($10*$9); print $0}'  | datamash median 12`
+
+#Now make the table
+zcat hmel2.5.10k_win.Hmel2*.sites.jaccard_matrix.gz | cut -f 1-11 | awk 'BEGIN {OFS="\t"}; {$12 = $11/($10*$9);$13=$12/'$background_rate'; print $0}' > hmel2.5.10k_win.Hmel2*.sites.jaccard_matrix.front
+```
+
+# Misc
+Accumulative offset file
+```bash
+awk '{print substr($1,1,8)"\t"$0}' helera1_demo.accum.sizes | datamash groupby 1 first 5 > helera1_demo.accum.offset
+```
