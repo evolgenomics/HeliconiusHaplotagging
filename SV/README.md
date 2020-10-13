@@ -10,7 +10,7 @@ This is the code for detecting structural variants
 - index the bgzipped BED file using `tabix`
 - on a compute cluster, calculate a Jaccard index for beadTag sharing across windows using the code `struct_jaccard.pl`, looping through the intervals list using an SGE array job, with each job index used to call a joblist file
 - basic post-processing of the Jaccord matrix by calculating genome-wide background threshold levels
-- analyze the Jaccard matrix to detect any anomolies and calling regions of interest (ROIs)
+- analyze the Jaccard matrix to detect any anomolies and calling regions of interest (ROIs), here using `pick_ROI.pl`
 
 # Interval writing
 
