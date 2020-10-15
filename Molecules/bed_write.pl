@@ -22,7 +22,7 @@ my $sam = "";
 
 my @cache;
 my %sort_order;
-open (PIPE, "samtools view $ARGV[0] -F 1024|");
+open (PIPE, "samtools view $ARGV[0] -F 3840|");
 while (<PIPE>) {
 	my @temp = split "\t";
 	#$temp[0] = $1."|".$3."|".$2."//".$temp[0] if (/BX:Z:(\S+).+QX:Z:(\S+).+RX:Z:(\S+)/);
