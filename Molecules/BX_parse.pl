@@ -142,7 +142,7 @@ my $last_writeout;
 my $v = `pwd`;
 print $v;
 print "samtools view -h $ARGV[0] -L $file $chr:$start-$end |samtools calmd -h -S - /fml/chones/genome/gbdb/mm10/mm10.fa| /samtools view -h - |\n";
-open (IN, "samtools view -h $ARGV[0] -L $file $chr:$start-$end |samtools calmd -h -S - /fml/chones/genome/gbdb/mm10/mm10.fa | samtools view -h - |");
+open (IN, "samtools view -F 3840 -h $ARGV[0] -L $file $chr:$start-$end |samtools calmd -h -S - /fml/chones/genome/gbdb/mm10/mm10.fa | samtools view -h - |");
 READ: while (<IN>) {
 #ST-J00101:68:HKHWYBBXX:2:1115:10338:10440	147	6	100317514	60	150M	=	100317381	-283	=======================T===============================================A=====================================================C==T=C===C=====T=========	<-<JJAFF<JJJFJFJJFJJFJJFJJJJJFJJJJJJJJJJJFJJJJJJFFJJJJJJJFJFFJJJJJJFJJJJFJJFJJJJJJJJFJJJ-JFJAJJJFJJJJJJJJJFJFJFJJJJJFJJJJJJJJJJJFJJJJFJJFFJJFJJJJ<AAAA	QT:Z:AAFFFJJJ	BC:Z:AAGATCAT	QX:Z:AAFAFJJJJJJJJJJJ	AM:A:0	XM:A:0	RX:Z:GTGGGTCGTTGTACAC	AS:f:-21	XS:f:-88.6717	BX:Z:GTGGGTCGTTGTACAC-1	XT:i:0	OM:i:60	RG:Z:MitoMeio_S18_5d_CTRL-DMSO:LibraryNotSpecified:1:unknown_fc:0	PS:i:99705759	HP:i:2	PC:i:57	MI:i:81353161	NM:i:7	MD:Z:23C47G53A2C1T3A5C9
 	#next unless (/BX:Z:(\S+).+MI:i:(\d+)/);
