@@ -27,16 +27,40 @@ nice realSFS fst index plesseni.merged.saf.idx malleti.merged.saf.idx \
  -fstout melpomene -whichFST 1 -sfs plesseni-malleti.folded.ml  
 
 # Compute sliding window Fst in 10kb windows
-nice realSFS fst stats2 melpomene.fst.idx -win 10000 -step 2500 -type 0 > melpomene.folded.fst.10kb.2.5kb.idx
- 
-# Liftover the melpomene window positions to erato reference genome positions
-file=melpomene.folded.fst.10kb.2.5kb.idx
-liftOver <(awk 'NR>1{print $2,$3,$3+1000,$2"_"$3"_"$5}' $file) \
+nice realSFS fst stats2 melpomene.fst.idx -P 6 -win 10000 -step 10000 -type 0 > melpomene.folded.fst.10kb.idx
+
+# Run a Hidden Markov Model (HMM) to define regions of elevated differentiation
+
+# Compute z scores in R
+R
+fst<-read.table("fst.10kb.idx",header=T)
+zscore <- function(x) {
+  x<- as.numeric(as.character(x))
+  (x-mean(x))/sd(x) }
+z<-zscore(fst$Fst)
+write.table(z,file="zscores.10kb.txt",row.names=F,col.names=F,quote=F)
+
+# Add a header
+sed -i '1ix' zscores.10kb.txt
+
+# Run a HMM over these z scores specifying 3 cores
+# Transition and emission probabilities are optimized with Baum-Welch algorithm
+# ML sequence of state is inferred with the Viterbi algorithm
+# Note, I fixed the means of the state distributions to 0 and 3 and the sd to 1
+Rscript HMM_zscores_2norm_fixedMeanSd.R zscores.10kb.txt 3
+
+# Add the HMM states to the 10 kb Fst values
+paste fst.10kb.idx <(cut -d" "  -f 2 zscores.10kb_2state_HMMstates.txt) > fst.10kb.idx.withHMM
+
+# liftover the window positions to H. erato reference genome positions
+file=fst.10kb.idx.withHMM
+cp $file ../eratoPos
+cd ../eratoPos
+liftOver <(awk 'NR>1{print $2,$3,$3+1000,$2"_"$3"_"$5"_"$6}' $file) \
   hmel2.5-helera1_demo.largeGap.14k.filtered.chain.gz \
   $file.eratoLiftOver.tmp $file.eratoLiftOver.unmapped -multiple
-
-# Add a header and remove additional matches (index>1)
-sed -e '1iscaffold\tpos\tpos2\tHmelScaff\tMelPos\tFst\tindex' \
- -e 's/_/\t/g' $file.eratoLiftOver.tmp | awk '{if($7<2 || $7=="index") print}'  > $file.eratoLiftOver
-rm $file.eratoLiftOver.tmp # remove the temporary file
+ 
+sed -e '1iscaffold\tpos\tpos2\tHmelScaff\tMelPos\tFst\tHMM\tindex' \
+ -e 's/_/\t/g' $file.eratoLiftOver.tmp | awk '{if($8<2 || $8=="index") print}'  > $file.eratoLiftOver
+rm $file.eratoLiftOver.tmp
 
