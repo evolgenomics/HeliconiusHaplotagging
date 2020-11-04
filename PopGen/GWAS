@@ -1,0 +1,78 @@
+#!/bin/bash
+
+# Get first column of NGSadmix K=2 result to account for population substructure
+cut -f 1 -d " " stitch_hmel2.5.PL.AD.filt.subsampled.K2.qopt > NGSadmix.prop
+
+# Run angsd Asso 2 (Score test)
+
+# red patterns
+angsd -yQuant optix.info -doAsso 2 -doPost 1 -out ${FILE}.gwas.optix.NGSadmixK3.Asso2.cov \
+ -doMajorMinor 4 -doMaf 1 -vcf-gl ../vcf/$FILE.vcf.gz -SNP_pval 1e-6 \
+ -P 8 -model 1 -cov NGSadmix.K3.prop \
+ -ref ./Hmel2.5.fa
+
+# number of forewing bands
+angsd -yQuant wntA.info -doAsso 2 -doPost 1 -out ${FILE}.gwas.wntA.NGSadmixK3.Asso2.cov \
+ -doMajorMinor 4 -doMaf 1 -vcf-gl ../vcf/$FILE.vcf.gz -SNP_pval 1e-6 \
+ -P 8 -model 1 -cov NGSadmix.K3.prop \
+ -ref ./Hmel2.5.fa
+
+# yellow forewing base spot
+angsd -yBin ybs.info -doAsso 2 -out ${FILE}.ybs.NGSadmixK3.Asso2.model3.cov -doPost 1 \
+ -doMajorMinor 4 -doMaf 1 -vcf-gl ../vcf/$FILE.vcf.gz  -P 8 -minCount 10 \
+ -model 3 -cov NGSadmix.K3.prop -SNP_pval 1e-6 \
+ -ref ./Hmel2.5.fa
+
+# distribution of red scales
+angsd -yBin N.info -doAsso 2 -out ${FILE}.N.NGSadmixK3.Asso2.model3.cov -doPost 1 \
+ -doMajorMinor 4 -doMaf 1 -vcf-gl ../vcf/$FILE.vcf.gz  -P 8 -minCount 10 \
+ -model 3 -cov NGSadmix.K3.prop -SNP_pval 1e-6 \
+ -ref ./Hmel2.5.fa
+
+# Extract the value of the most strongly associated SNP from each 10 kb window
+# this R code was run as an Rscript where the file name is given as an argument to the Rscript
+
+# Load packages required
+require("data.table")
+require("qqman")
+require("devtools")
+require("windowscanr")
+
+# Read in the GWAS file from angsd
+args<-commandArgs(TRUE)
+file<-args[1]            
+ass.dat <- fread(file, header=T, sep = '\t', stringsAsFactors=F)
+
+# Rename LRTscore to LRT if present (only for CC)
+names(ass.dat)[names(ass.dat)=="LRTscore"]<-"LRT"
+
+# Remove sites with maf < 0.05
+ass.dat <- subset(ass.dat, ass.dat$Frequency>0.05)
+ass.dat <- subset(ass.dat, ass.dat$Frequency<0.95)
+
+# Replace -999 (failed) with NA
+ass.dat[ass.dat==-999] <- NA
+ass.dat <- subset(ass.dat, LRT!="")
+
+ass.dat$p.val <- pchisq(ass.dat$LRT,df=1, lower.tail=FALSE)
+
+#### Generate window averages #####
+# 10kb windows sliding by 2.5 kb, position fixed
+ass.dat.10kb.pos <- winScan(x = ass.dat,  
+                               position = "Position",
+                               values = "p.val", 
+                               groups = "Chromosome",
+                               win_size = 10000,
+                               win_step = 2500,
+                               funs = c("min","median"))                   
+
+# Compute -log10 p values
+ass.dat.10kb.pos$logMedP<-(-log10(ass.dat.10kb.pos$p.val_median))
+ass.dat.10kb.pos$logMinP<-(-log10(ass.dat.10kb.pos$p.val_min))
+
+
+# Remove windows with too few sites
+ass.dat.10kb.pos<-ass.dat.10kb.pos[ass.dat.10kb.pos$p.val_n>100,]
+
+# Write out the results to a file
+write.table(ass.dat.10kb.pos,file=paste0(file,".10kb.p-val.pos"), sep = '\t',quote=FALSE)
