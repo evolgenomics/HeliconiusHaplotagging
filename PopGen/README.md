@@ -2,14 +2,16 @@
 Scripts and files in this folder are example scripts for selection scans and summary statistics between populations.
 
 Briefly, we used: 
-- FST
-- delta pi
 - omegaPlus
 - sweeD
 - selScan
 to perform some of the haplotype-based selection scans.
 
-In addition, we used angsd to generate statistics based on site frequency spectra (SFS).
+We computed pi with vcftools for delta pi.
+
+In addition, we used angsd to generate statistics based on site frequency spectra (SFS) such as FST. 
+
+Lastly, we computed population structure with NGSadmix and performed genomewide association mapping (GWAS) with angsd.
 
 Notes on particular tests are discussed below.
 
