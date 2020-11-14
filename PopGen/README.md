@@ -13,7 +13,7 @@ and for haplotype-based selection scans:
 Genome-wide association mapping (GWAS) and interval mapping
 * [population structure](https://github.com/evolgenomics/HeliconiusHaplotagging/blob/main/PopGen/NGSadmix.sh) used as a covariate for GWAS was inferred with NGSadmix 
 * [GWAS](https://github.com/evolgenomics/HeliconiusHaplotagging/blob/main/PopGen/GWAS) was performed with angsd 
-* interval mapping was performed using a custom R [script]((https://github.com/evolgenomics/HeliconiusHaplotagging/blob/main/PopGen/interval_mapping_melpomene.sh)
+* interval mapping was performed using a custom R [script](https://github.com/evolgenomics/HeliconiusHaplotagging/blob/main/PopGen/interval_mapping_melpomene.sh)
 
 The R script for Fig. 3 combining these statistics is given [here](https://github.com/evolgenomics/HeliconiusHaplotagging/blob/main/PopGen/plotGenomeScans_Fig3.r).
 
