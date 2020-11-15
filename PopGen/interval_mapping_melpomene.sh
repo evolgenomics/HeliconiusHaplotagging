@@ -279,12 +279,8 @@ cbind(813673,814333,"Wallbank_Dennis_2"),
 cbind(814176,817339,"JoeHanly_dennis"),
 cbind(773272,787408,"JoeHanly_ray"),
 cbind(718819,730976,"JoeHanly_band1"),
-cbind(780304,796765,"JoeHanly_band2"),
-cbind(821474,821925,"Lewis_obs214_Hel_chr18_1:213768+214571"),
-cbind(768307,770273,"Lewis_obs132_Hel_chr18_1:131901+133676"),
-cbind(772702,788830,"Lewis_LR1_Hel_chr18_1:168703+169882"),
-cbind(791000,795000,"Lewis_LR2"),
-cbind(708000,710000,"Lewis_U1_Hel_chr18_1:1252449"))
+cbind(780304,796765,"JoeHanly_band2")
+)
 
 library(qdapTools)
 
@@ -302,10 +298,18 @@ plotGenotypes <- function(x, b,width=0.5) {
                                "value"=as.character(rle(x)$values),
                                "start"=c(1,cumsum(as.numeric(rle(x)$lengths))[-(length(rle(x)$lengths))]+1)))
   colRuns$startPos<-genotypes$POS[as.numeric(as.character(colRuns$start))]
-  colRuns$endPos<-c(colRuns$startPos[-1],genotypes$POS[length(genotypes$POS)])
+  colRuns$endPos<-genotypes$POS[as.numeric(as.character(colRuns$start))+as.numeric(as.character(colRuns$length))-1]
+  
+  # Plot colour runs
   rect(xleft = colRuns$startPos,xright=colRuns$endPos,
        ybottom = b-width,ytop=b+width,
        col=makeTransparent(colRuns$value),border = NA)
+  
+  # Plot grey between colour runs
+  if(length(colRuns$length)>1)
+    rect(xleft = colRuns$endPos[-length(colRuns$endPos)]+1,xright=colRuns$startPos[-1]-1,
+         ybottom = b-width,ytop=b+width,
+         col=makeTransparent("grey"),border = NA)
 }
 
 
@@ -425,7 +429,7 @@ indices<-c(1:32,34:60,62:119,122:122)
 
 # Plot the haplotypes
 for(i in 1:length(colours[,1])){
-  plotGenotypes(x=as.character(as.matrix(colours[i,])),b=indices[i],i=i)
+  plotGenotypes(x=as.character(as.matrix(colours[i,])),b=indices[i])
 }
 
 # Convert colours to data frame
