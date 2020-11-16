@@ -1,19 +1,23 @@
 # Introduction
-Scripts and files in this folder are example scripts for selection scans and summary statistics between populations.
+Scripts and files in this folder are example scripts for selection scans, trait association mapping and summary statistics between populations.
 
 Briefly, we used: 
-- omegaPlus
-- sweeD
-- selScan
-to perform some of the haplotype-based selection scans.
+* angsd for [FST](https://github.com/evolgenomics/HeliconiusHaplotagging/blob/main/PopGen/FST_melpomene.sh)
+* vcftools for [delta pi](https://github.com/evolgenomics/HeliconiusHaplotagging/blob/main/PopGen/delta_pi.sh)
 
-We computed pi with vcftools for delta pi.
+and for haplotype-based selection scans:
+* omegaPlus
+* sweeD
+* selScan
 
-In addition, we used angsd to generate statistics based on site frequency spectra (SFS) such as FST. 
+Genome-wide association mapping (GWAS) and interval mapping
+* [population structure](https://github.com/evolgenomics/HeliconiusHaplotagging/blob/main/PopGen/NGSadmix.sh) used as a covariate for GWAS was inferred with NGSadmix 
+* [GWAS](https://github.com/evolgenomics/HeliconiusHaplotagging/blob/main/PopGen/GWAS) was performed with angsd 
+* interval mapping was performed using a custom R [script](https://github.com/evolgenomics/HeliconiusHaplotagging/blob/main/PopGen/interval_mapping_melpomene.sh)
 
-Lastly, we computed population structure with NGSadmix and performed genomewide association mapping (GWAS) with angsd.
+The R script for Fig. 3 combining these statistics is given [here](https://github.com/evolgenomics/HeliconiusHaplotagging/blob/main/PopGen/plotGenomeScans_Fig3.r).
 
-Notes on particular tests are discussed below.
+Notes on particular tests are given below.
 
 # FST
 We computed FST per-site and in 10 kb windows with angsd using the genotype likelihoods emitted by HAPCUT2. We then used a Hidden Markov Model (HMM) approach to infer regions of particularly high FST indicative of divergent selection.
@@ -27,3 +31,8 @@ Therefore in our pipeline, we dynamically adjusted the grid size based on the to
 
 To represent the phased haplotypes, we opted to use the MaCS format. We therefore added a dummy header in the MaCS.in.template file, and then dynamically recoded the VCF file through `awk` into the MaCS file format.
 
+# GWAS
+We inferred the population structure with [NGSadmix](http://www.popgen.dk/software/index.php/NgsAdmix) and used the admixture proportions as covariates for the GWAS (genome-wide association study) in [angsd](http://www.popgen.dk/angsd/index.php/Association). The optimal number of K clusters was inferred with [Clumpak](http://clumpak.tau.ac.il/). We performed GWAS using the Score test in angsd for each phenotypic trait separately.
+
+# Interval mapping
+To refine specific regulatory elements or tightly linked genes in Heliconius melpomene, we performed interval mapping for traits that mapped to optix and cortex and/or nearby genes. This allowed us to narrow down which regulatory element of optix controls which aspect of the red patterns and it allowed us to figure out that the variable presence of a yellow spot at the forewing base maps to cortex, whereas the distribution of red scales maps to two overlapping genes (domeless/washout) that are tighly linked to cortex.
