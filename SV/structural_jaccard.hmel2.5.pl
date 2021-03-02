@@ -35,6 +35,7 @@ foreach my $int (@int_list) {
 		my %p_counts;
 		my %p_overlap;
 
+		my @i_list = map {chomp; $_} `for file in  /tmp/global2/frankyc/run164_L45_corrected.hmel2.5.sorted.dedup.bxSorted.linked_reads.full.filtered.sorted.bed.gz  /tmp/global2/frankyc/run164_L67_corrected.hmel2.5.sorted.dedup.bxSorted.linked_reads.full.filtered.sorted.bed.gz; do tabix \$file $intervals[$j]; done | cut -f 4| uniq`;
 		my @j_list = map {chomp; $_} `for file in  /tmp/global2/frankyc/run164_L45_corrected.hmel2.5.sorted.dedup.bxSorted.linked_reads.full.filtered.sorted.bed.gz  /tmp/global2/frankyc/run164_L67_corrected.hmel2.5.sorted.dedup.bxSorted.linked_reads.full.filtered.sorted.bed.gz; do tabix \$file $intervals[$j]; done | cut -f 4| uniq`;
 		
 		my %i_watch;
