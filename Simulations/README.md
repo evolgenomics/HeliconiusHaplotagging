@@ -30,6 +30,7 @@ To run this simulation, you'll need:
 - [STITCH](https://github.com/rwdavies/STITCH)
 - [datamash](https://www.gnu.org/software/datamash/)
 
+#Pipeline map
 Here is a quick overview of the pipelines used in the paper:
 ![Pipeline](Pipelines_simulations_1.png?raw=true "Simulation pipeline")
 
