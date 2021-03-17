@@ -30,7 +30,7 @@ To run this simulation, you'll need:
 - [samtools](https://github.com/samtools/samtools)
 - [bcftools](https://github.com/samtools/bcftools)
 - [STITCH](https://github.com/rwdavies/STITCH)
-- [HAPCUT2] (https://github.com/vibansal/HapCUT2)
+- [HAPCUT2](https://github.com/vibansal/HapCUT2)
 - [datamash](https://www.gnu.org/software/datamash/)
 
 #Pipeline map
