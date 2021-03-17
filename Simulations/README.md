@@ -33,7 +33,7 @@ To run this simulation, you'll need:
 - [HAPCUT2](https://github.com/vibansal/HapCUT2)
 - [datamash](https://www.gnu.org/software/datamash/)
 
-#Pipeline map
+# Pipeline map
 Here is a quick overview of the pipelines used in the paper:
 ![Pipeline](Pipelines_simulations_1.png?raw=true "Simulation pipeline")
 
