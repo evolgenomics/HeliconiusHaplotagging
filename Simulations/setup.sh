@@ -31,4 +31,5 @@ wget http://ftp.tuebingen.mpg.de/fml/ag-chan/haplotagging/simulations/vcf.header
 bcftools query -f "[\t%GT]\n" PC062_merged_Herato1603.3.45Mb.PL.AD.HAPCUT2.vcf.gz | sed 's/[|/]/\t/g;s/^\t//' | datamash transpose | sed 's/\t//g' | sort > PC062_merged_Herat1603_3.45Mb.simBlock.horiz.sorted 
 bcftools query -f "%CHROM\t%POS\t%REF\t%ALT\n" PC062_merged_Herato1603.3.45Mb.PL.AD.HAPCUT2.vcf.gz > PC062_merged_Herato1603.3.45Mb.PL.AD.HAPCUT2.pos
 for i in `seq 0 2 967`; do echo "hap_"$i; done > sample.names
+echo "Herato1603	3350000	3650000" > focal_region.bed 
 cd ..
