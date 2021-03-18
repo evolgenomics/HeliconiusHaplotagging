@@ -35,6 +35,7 @@ To run this simulation, you'll need:
 - [datamash](https://www.gnu.org/software/datamash/)
 
 # Quick start
+To help you get familiar with the simulation scheme, I have written a quick wrapper script to download the relevant sample data and basic assembly, followed by an example `run_all.sh` script.
 ```
 ./setup.sh
 ./run_all.sh
