@@ -5,17 +5,18 @@ echo "***NOTE: The entire pipeline with 968 samples takes a long time to run. Co
 echo "[run_all.sh] Setting up...
 ";
 
-#./setup.sh
+chmod 755 setup.sh
+./setup.sh
 
 echo "[run_mspms.sh] Simulate using mspsm 968 haplotypes, 13505 SNPs, at 10 rho using the tag \"example\"...
 ";
 
-#scripts/run_mspms.sh example 13505 968 10 1
+scripts/run_mspms.sh example 968 13505 10 1
 
 echo "[run_all.sh] Generating truth haploytpes...
 ";
 
--TEST#tperl scripts/simulate_haplotypes_ARG.pl $tag 1 968 0.01
+perl scripts/simulate_haplotypes_ARG.pl $tag 1 968 0.01
 
 echo "[run_all.sh] Starting simulation...
 ";
