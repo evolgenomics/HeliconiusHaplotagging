@@ -3,7 +3,7 @@ echo "
 [setup.sh] Creating folder structure...
 
 ";
-for folder in sourceData altFa simARG simTrees simBam simFastq simHaps simMuts scripts log; do \
+for folder in sourceData altFa simARG simTrees simBam simFastq simHaps simMuts log; do \
 	mkdir $folder;
 done
 
