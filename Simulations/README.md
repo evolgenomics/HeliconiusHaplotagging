@@ -28,10 +28,17 @@ To run this simulation, you'll need:
 - [dwgsim](https://github.com/nh13/DWGSIM)
 - [bwa](https://github.com/lh3/bwa)
 - [samtools](https://github.com/samtools/samtools)
+- [tabix](https://github.com/samtools/tabix.git)
 - [bcftools](https://github.com/samtools/bcftools)
 - [STITCH](https://github.com/rwdavies/STITCH)
 - [HAPCUT2](https://github.com/vibansal/HapCUT2)
 - [datamash](https://www.gnu.org/software/datamash/)
+
+# Quick start
+```
+./setup.sh
+./run_all.sh
+```
 
 # Pipeline map
 Here is a quick overview of the pipelines used in the paper:
