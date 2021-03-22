@@ -26,7 +26,9 @@ scripts/simulate_reads-molecules.sh $tag
 scripts/run_STITCH.sh $tag linkedReads simBam/bamfiles.linkedReads.$tag.968.list --use_bx_tag=TRUE  
 scripts/run_STITCH.sh $tag shortReads simBam/bamfiles.linkedReads.$tag.968.list
 
-for datatype in linked short; do 
-	scripts/post_STITCH.sh STITCH_out/STITCH_968_${datatype}Reads_$tag; 
-	scripts/run_hapcut2.sh STITCH_out/STITCH_968_${datatype}Reads_$tag; 
-done; 
+for datatype in linked short; do
+    cd STITCH_out/STITCH_968_${datatype}Reads_$tag;
+    ../../scripts/post_STITCH.sh $tag STITCH_out/STITCH_968_${datatype}Reads_$tag; 
+    ../../scripts/run_hapcut2.sh STITCH_out/STITCH_968_${datatype}Reads_$tag;                           
+    cd ..
+done;
