@@ -26,11 +26,11 @@ rm $tmp/$out.$tag.*
 
 echo "Writing temporary VCF files..." 
 bcftools view -s $runBC $vcf -i 'INFO/INFO_SCORE >= 0.2' | awk '/^#/;/CHROM/ {OFS="\t"}; !/^#/ && $10~/^0\/1/' > $tmp/$sampleHetVCF
-bcftools view -s $runBC $vcf -i 'INFO/INFO_SCORE >= 0.2'  | awk '/^#/;/CHROM/ {OFS="\t"}; !/^#/ &&  $10~/^0\/0/ {$10="0|0:"substr($10,5);print $0};  !/^#/ && $10~/^0\/1/; !/^#/ &&  $10~/^1\/1/ {$10="1|1:"substr($10,5);print $0}; !/^#/ {print $0}' > $tmp/$sampleVCF
+#bcftools view -s $runBC $vcf -i 'INFO/INFO_SCORE >= 0.2'  | awk '/^#/;/CHROM/ {OFS="\t"}; !/^#/ &&  $10~/^0\/0/ {$10="0|0:"substr($10,5);print $0};  !/^#/ && $10~/^0\/1/; !/^#/ &&  $10~/^1\/1/ {$10="1|1:"substr($10,5);print $0}; !/^#/ {print $0}' > $tmp/$sampleVCF
 bcftools view -s $runBC $vcf -i 'INFO/INFO_SCORE >= 0.2'  | awk '/^#/;/CHROM/ {OFS="\t"}; !/^#/ &&  $10~/^0\/0/ {$10="0|0:"substr($10,5);print $0}; !/^#/ &&  $10~/^1\/1/ {$10="1|1:"substr($10,5);print $0}; !/^#/ && $10~/^0\/1/ {$9=substr($9, 4); $10=substr($10,5);print $0}' > $tmp/$sampleVCF
 #Option to use if PG field has not been used as backup GT
-bcftools view -s $runBC $vcf -i 'INFO/INFO_SCORE >= 0.2' | awk '/^#/;/CHROM/ {OFS="\t"}; !/^#/ && $10~/^0\/1/; !/^#/ && $10~/\.\/\./ {split($10,FMT,":"); split(FMT[2],GP,",");if (GP[2] > GP[1] && GP[2] > GP[3]) {$10="0/1"substr($10,4);print $0}}' > $tmp/$sampleHetVCF
-bcftools view -s $runBC $vcf -i 'INFO/INFO_SCORE >= 0.2'  | awk '/^#/;/CHROM/ {OFS="\t"}; !/^#/ &&  $10~/^0\/0/ {$10=$10":0|0";$9=$9":PG";print $0};  !/^#/ && $10~/^0\/1/; !/^#/ &&  $10~/^1\/1/ {$10=$10":1|1";$9=$9":PG";print $0}; !/^#/ && $10~/\.\/\./ {split($10,FMT,":"); split(FMT[2],GP,",");if (GP[1] > GP[2] && GP[1] > GP[3]) {$10=$10":0|0";$9=$9":PG";print $0}; if(GP[3]>GP[2] && GP[3] > GP[1]) {$10=$10":1|1";$9=$9":PG";print $0};if (GP[2] > GP[1] && GP[2] > GP[3]) {print $0}; if (GP[1] == GP[2] || GP[1] == GP[3] || GP[2] == GP[3]){print $0} }' > $tmp/$sampleVCF
+#bcftools view -s $runBC $vcf -i 'INFO/INFO_SCORE >= 0.2' | awk '/^#/;/CHROM/ {OFS="\t"}; !/^#/ && $10~/^0\/1/; !/^#/ && $10~/\.\/\./ {split($10,FMT,":"); split(FMT[2],GP,",");if (GP[2] > GP[1] && GP[2] > GP[3]) {$10="0/1"substr($10,4);print $0}}' > $tmp/$sampleHetVCF
+#bcftools view -s $runBC $vcf -i 'INFO/INFO_SCORE >= 0.2'  | awk '/^#/;/CHROM/ {OFS="\t"}; !/^#/ &&  $10~/^0\/0/ {$10=$10":0|0";$9=$9":PG";print $0};  !/^#/ && $10~/^0\/1/; !/^#/ &&  $10~/^1\/1/ {$10=$10":1|1";$9=$9":PG";print $0}; !/^#/ && $10~/\.\/\./ {split($10,FMT,":"); split(FMT[2],GP,",");if (GP[1] > GP[2] && GP[1] > GP[3]) {$10=$10":0|0";$9=$9":PG";print $0}; if(GP[3]>GP[2] && GP[3] > GP[1]) {$10=$10":1|1";$9=$9":PG";print $0};if (GP[2] > GP[1] && GP[2] > GP[3]) {print $0}; if (GP[1] == GP[2] || GP[1] == GP[3] || GP[2] == GP[3]){print $0} }' > $tmp/$sampleVCF
 # 
 
 ##
