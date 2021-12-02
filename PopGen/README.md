@@ -20,7 +20,7 @@ The R script for Fig. 3 combining these statistics is given [here](https://githu
 Notes on particular tests are given below.
 
 # FST
-We computed FST per-site and in 10 kb windows with angsd using the genotype likelihoods emitted by HAPCUT2. We then used a Hidden Markov Model (HMM) approach to infer regions of particularly high FST indicative of divergent selection.
+We computed FST per-site and in 10 kb windows with angsd using the genotype likelihoods emitted by STITCH. We then used a Hidden Markov Model (HMM) approach to infer regions of particularly high FST indicative of divergent selection.
 
 # Delta pi
 Here, we computed the nucleotide diversity (pi) for each race separately with vcftools. Whereas pi can vary due to differences in mutation rates, recombination rates, etc, these factors should affect both races similarly. However, selection in only one race is expected to lead to a decreased pi in that race and thus a difference in pi. Delta pi, i.e. the difference in pi between the two races compared is thus expected to deviate from zero in genomic regions where one race experienced more selection than the other one.
